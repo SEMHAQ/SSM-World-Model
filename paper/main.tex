@@ -8,7 +8,7 @@
 % 标题，基金项目，作者，地址定义
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatother
-\title{\LARGE\textbf{基于MIMO-SSM的人形机器人轻量级世界模型}\\
+\title{\LARGE\textbf{基于多输入多输出状态空间模型的人形机器人轻量级世界模型}\\
 \footnotetext{\scriptsize \hskip -6pt
 \hspace*{-0.1em}收稿日期: xxxx$-$xx$-$xx; 录用日期: xxxx$-$xx$-$xx.\\
 \hspace*{1.1em}$^{\dag}$通讯作者. E-mail: \mbox{semhaqx@gmail.com}.\\
@@ -23,7 +23,7 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \scriptsize 3. 湖南工商大学~计算机学院, 湖南~长沙~410205;\\
 \scriptsize 4. 湖南工商大学~前沿交叉学院, 湖南~长沙~410205) \\}
 \date{}
-\fancyhead[CO]{{\footnotesize 周新民等: 基于MIMO-SSM的人形机器人轻量级世界模型}}
+\fancyhead[CO]{{\footnotesize 周新民等: 基于多输入多输出状态空间模型的人形机器人轻量级世界模型}}
 \setlength{\abovedisplayskip}{1.5mm}
 \setlength{\belowdisplayskip}{1.5mm}
 \maketitle
@@ -35,16 +35,15 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \begin{center}
 \parbox{\textwidth}{\setlength{\parindent}{1em}
 {\footnotesize {\CJKfamily{hei} 摘要:}
-机器人的高维状态预测面临精度与实时性的双重挑战.
-本文提出基于MIMO-SSM的人形机器人轻量级世界模型MIMO-WM, 采用多输入多输出状态空间模型架构, 通过并行扫描算法实现高效序列建模, 并引入sigmoid门控机制增强表达能力.
-在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明:
-MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%;
-参数量仅0.138M, 为所有方法中最轻量.
-理论分析证明了对角SSM递推与卷积模式的等价性以及交叉熵方法采样式MPC的收敛性保证.
+针对人形机器人高维状态预测中精度与计算效率难以兼顾的问题, 本文提出一种基于多输入多输出状态空间模型的轻量级世界模型MIMO-WM.
+该模型通过并行扫描算法实现高效序列建模, 并引入sigmoid门控机制增强表达能力.
+在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明, MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比次优方法降低1.5\%, 参数量仅0.138M.
+理论分析证明了对角状态空间模型递推与卷积模式的等价性、计算复杂度优势以及交叉熵方法采样式模型预测控制的收敛性.
+实验结果验证了MIMO-WM在人形机器人状态预测任务中的有效性和轻量化优势.
 
 {\CJKfamily{hei} 关键词:} 状态空间模型; 世界模型; 状态预测; 模型预测控制; 具身智能
 
-{\CJKfamily{hei}引用格式:} 周新民, 余焕杰, 张慧慧, 等. 基于MIMO-SSM的人形机器人轻量级世界模型. 控制理论与应用, xxxx, xx(x): xxx -- xxx\\\vspace*{-16pt}
+{\CJKfamily{hei}引用格式:} 周新民, 余焕杰, 张慧慧, 等. 基于多输入多输出状态空间模型的人形机器人轻量级世界模型. 控制理论与应用, xxxx, xx(x): xxx -- xxx\\\vspace*{-16pt}
 
 \textbf{DOI:} 10.7641/CTA.202x.xxxxx
 
@@ -57,7 +56,7 @@ MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, �
 \vspace{.1cm}
 \begin{center}
 \parbox{\textwidth}{\setlength{\parindent}{1em}
-{\centering\large\textbf{A Lightweight MIMO-SSM World Model for Humanoid Robot State Prediction\\}} \vspace{-1.2mm}
+{\centering\large\textbf{A Lightweight MIMO-SSM World Model for Humanoid Robot State Prediction}} \vspace{-1.2mm}
 \begingroup\centering
 ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG Wei$^{3}$,~~CHEN Lu$^{4}$\\[2pt]
 \scriptsize{(1. School of Artificial Intelligence and Robotics, Hunan University of Technology and Business, Changsha Hunan 410205, China;\\
@@ -67,11 +66,11 @@ ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG W
 \end{center}
 
 \vspace{-10pt}\footnotesize{\textbf{Abstract:}
-Humanoid robot state prediction faces the dual challenges of accuracy and real-time performance. This paper proposes MIMO-WM, a lightweight world model based on multi-input multi-output state space model (MIMO-SSM) architecture, which achieves efficient sequence modeling through parallel scanning and enhances expressiveness via a sigmoid gating mechanism. Multi-seed experiments on Gymnasium MuJoCo Humanoid and HumanoidStandup benchmarks show that MIMO-WM achieves the best accuracy on Humanoid with MSE of $19.87\times10^{-2}$, 1.5\% lower than Mamba-WM and 29.3\% lower than Transformer-WM, with only 0.138M parameters---the most lightweight among all methods. Theoretical analysis proves the equivalence of recurrent and convolution modes of diagonal SSM and the convergence guarantee of CEM-MPC.
+Humanoid robot state prediction faces the dual challenges of accuracy and computational efficiency. This paper proposes MIMO-WM, a lightweight world model based on multi-input multi-output state space model architecture, which achieves efficient sequence modeling through parallel scanning and enhances expressiveness via a sigmoid gating mechanism. Multi-seed experiments on Gymnasium MuJoCo Humanoid and HumanoidStandup benchmarks demonstrate that MIMO-WM achieves the best prediction accuracy on Humanoid with mean squared error of $19.87\times10^{-2}$, outperforming the second-best method by 1.5 percent, while requiring only 0.138 million parameters. Theoretical analysis proves the equivalence of recurrent and convolution computation modes, the computational complexity advantage, and the convergence guarantee of cross-entropy method based model predictive control. Experimental results validate the effectiveness and lightweight advantage of MIMO-WM for humanoid robot state prediction tasks.
 
 \textbf{Key words:} state space model; world model; state prediction; model predictive control; embodied intelligence
 
-\textbf{Citation:} X. Zhou, H. Yu, H. Zhang, et al. A multi-scale dynamics world model for high-dimensional robot state prediction. {\it Control Theory \& Applications}, xxxx, xx(x): xxx -- xxx}}
+\textbf{Citation:} X. Zhou, H. Yu, H. Zhang, et al. A lightweight MIMO-SSM world model for humanoid robot state prediction. {\it Control Theory \& Applications}, xxxx, xx(x): xxx -- xxx}}
 \end{center}
 
 \renewcommand\refname{\normalsize{{\CJKfamily{hei}参考文献}}}
@@ -690,7 +689,7 @@ Fig.~2~~Multi-dimensional performance comparison on Humanoid dataset}
 
 \subsection{消融实验}
 
-为验证MIMO-WM各组件和关键超参数(层数$L$、隐空间维度$D$)的贡献,
+为验证MIMO-WM各组件和关键超参数的贡献,
 在Humanoid数据集上以$T=32$的默认设置下逐一移除或调整各组件, 结果如表~3所示.
 
 \noindent\begin{minipage}{\columnwidth}
@@ -822,10 +821,10 @@ MIMO-WM取得最优精度(MSE=$19.87{\times}10^{-2}$), 比Mamba-WM降低1.5\%, �
 理论分析证明了对角SSM递推与卷积模式的等价性以及CEM-MPC的收敛性保证.
 
 未来工作将聚焦以下方向:
-1)~~将MIMO-WM嵌入MPC框架, 验证其在人形机器人轨迹跟踪任务中的规划能力;
+1)~~进一步优化MIMO-WM的推理速度, 探索递推模式下的低延迟部署方案;
 2)~~在NVIDIA Jetson等嵌入式硬件上验证MIMO-WM的实际推理性能和能效;
 3)~~将MIMO-WM扩展到视觉输入, 构建更完整的多模态世界模型;
-4)~~在真实机器人上验证MIMO-WM的状态预测和控制性能.
+4)~~在真实人形机器人上验证MIMO-WM的状态预测和控制性能.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  参考文献
