@@ -330,7 +330,7 @@ Fig.~1~~Overall architecture of MIMO-WM}
 其中${\bm W}_1 \in \mathbb{R}^{D \times (d_s + d_a)}$, ${\bm W}_2 \in \mathbb{R}^{D \times D}$,
 $D$为隐空间维度. 解码器将最后一层输出映射回状态空间:
 \begin{eqnarray}
-\hat{{\bm s}}_{t+1} = {\bm W}_d{\bm z}_T' + {\bm b}_d + {\bm s}_t,
+\hat{{\bm s}}_T = {\bm W}_d{\bm z}_{T-1}' + {\bm b}_d + {\bm s}_{T-1},
 \end{eqnarray}
 采用残差结构将预测建模为状态增量, 有助于加速收敛.
 
