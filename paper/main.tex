@@ -242,8 +242,8 @@ Hafner等人}的Dreamer方法则将潜在动力学模型与MPC相结合.
 \begin{eqnarray}
 {\bm s}_{t+1} = f({\bm s}_t, {\bm a}_t),
 \end{eqnarray}
-使得给定历史观测序列$\{{\bm s}_{0:T}, {\bm a}_{0:T-1}\}$,
-能够预测未来$H$步的状态轨迹$\hat{{\bm s}}_{T+1:T+H}$.
+使得给定历史观测序列$\{{\bm s}_{0:T-1}, {\bm a}_{0:T-1}\}$,
+能够预测未来$H$步的状态轨迹$\hat{{\bm s}}_{T:T+H-1}$.
 在实际应用中, 状态转移函数$f$通常具有高维、非线性和耦合的特性.
 
 \subsection{状态空间模型}
@@ -568,7 +568,7 @@ N_{\text{total}} = O\big(LD^2 + D(d_s+d_a)\big),
 \begin{equation}
 \left\{\begin{aligned}
 \mathcal{L}_{\text{s}} &= \frac{1}{T}\sum_{t=0}^{T-1}\|{\bm s}_{t+1} - \hat{{\bm s}}_{t+1}\|^2, \\
-\mathcal{L}_{\text{m}} &= \frac{1}{H}\sum_{h=1}^{H}\|{\bm s}_{T+h} - \hat{{\bm s}}_{T+h}\|^2, \\
+\mathcal{L}_{\text{m}} &= \frac{1}{H}\sum_{h=0}^{H-1}\|{\bm s}_{T+h} - \hat{{\bm s}}_{T+h}\|^2, \\
 \mathcal{L} &= \mathcal{L}_{\text{s}} + \lambda \mathcal{L}_{\text{m}}.
 \end{aligned}\right.
 \end{equation}
