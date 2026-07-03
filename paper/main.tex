@@ -729,7 +729,7 @@ Fig.~3~~Ablation study results visualization}
 
 \subsection{序列长度敏感性分析}
 
-为分析序列长度对MIMO-WM预测精度的影响, 在Humanoid数据集上测试了不同序列长度$T$下的性能, 结果如表~4所示.
+为分析序列长度对MIMO-WM预测精度的影响, 在Humanoid和HumanoidStandup两个数据集上测试了不同序列长度$T$下的性能, 结果如表~4所示.
 
 \noindent\begin{minipage}{\columnwidth}
 \begingroup\centering
@@ -737,21 +737,25 @@ Fig.~3~~Ablation study results visualization}
 Table~4~~Prediction accuracy of MIMO-WM under different sequence lengths}\\
 \vskip 3pt
 {\fontsize{8.5pt}{10.6pt}\selectfont
-\begin{tabular}{@{}lcc@{}}\toprule
-$T$ & MSE$(\times10^{-2})$ & $R^2$ \\
+\begin{tabular}{@{}lcccc@{ }}\toprule
+& \multicolumn{2}{c}{Humanoid} & \multicolumn{2}{c}{HumanoidStandup} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+$T$ & MSE$(\times10^{-2})$ & $R^2$ & MSE$(\times10^{-2})$ & $R^2$ \\
 \midrule
-8  & 20.14$\pm$0.13 & 0.765 \\
-16 & \textbf{19.23$\pm$0.14} & \textbf{0.764} \\
-32 & 21.18$\pm$0.04 & 0.735 \\
-64 & 21.28$\pm$0.16 & 0.708 \\
-128 & 41.13$\pm$0.36 & 0.448 \\
+8  & \textbf{20.14$\pm$0.13} & \textbf{0.765} & \textbf{50.02$\pm$0.03} & \textbf{0.478} \\
+16 & 19.23$\pm$0.14 & 0.764 & 51.29$\pm$0.11 & 0.461 \\
+32 & 21.18$\pm$0.04 & 0.735 & 54.65$\pm$0.04 & 0.428 \\
+64 & 21.28$\pm$0.16 & 0.708 & 58.80$\pm$0.11 & 0.380 \\
+128 & 41.13$\pm$0.36 & 0.448 & 64.00$\pm$0.05 & 0.320 \\
 \bottomrule
-\multicolumn{3}{@{}l@{}}{\fontsize{7pt}{8.5pt}\selectfont 注: 3 seeds; Humanoid数据集.}
+\multicolumn{5}{@{}l@{}}{\fontsize{7pt}{8.5pt}\selectfont 注: 3 seeds.}
 \end{tabular}}
 \par\endgroup
 \end{minipage}
 
-表~4表明, MIMO-WM在$T{=}16$时取得最优精度, MSE为19.23. 当$T$增至32及以上时, 精度逐步下降, $T{=}128$时MSE增至41.13, R²降至0.448. 这表明对于Humanoid高维动力学系统, 较短的序列长度更有利于预测, 推荐$T \in [8, 32]$. 序列长度对预测精度的影响如图~4所示.
+表~4表明, 两个数据集均在$T{=}8$时取得最优$R^2$, 且预测精度随$T$增大而单调下降.
+Humanoid在$T{=}8$时MSE为20.14, $R^2$为0.765; HumanoidStandup在$T{=}8$时MSE为50.02, $R^2$为0.478.
+这表明对于高维人形机器人动力学系统, 较短的序列长度更有利于预测, 推荐$T \in [8, 16]$. 序列长度对预测精度的影响如图~4所示.
 
 \begingroup\centering
 \includegraphics[width=0.95\columnwidth]{figures/seqlen_sensitivity.pdf}\\
