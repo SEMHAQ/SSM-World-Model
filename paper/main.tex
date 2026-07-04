@@ -66,8 +66,6 @@ ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG W
 
 \vspace{-10pt}\footnotesize{\textbf{Abstract:}
 Humanoid robot state prediction faces the dual challenges of accuracy and computational efficiency. This paper proposes MIMO-WM, a lightweight world model based on multi-input multi-output state space model architecture, which achieves efficient sequence modeling through parallel scanning and enhances expressiveness via a sigmoid gating mechanism. Multi-seed experiments on Gymnasium MuJoCo Humanoid and HumanoidStandup benchmarks demonstrate that MIMO-WM achieves the best prediction accuracy on Humanoid with mean squared error of $19.87\times10^{-2}$, outperforming the second-best method by 1.5 percent, while requiring only 0.138 million parameters. Theoretical analysis proves the equivalence of recurrent and convolution computation modes, the computational complexity advantage, and the convergence guarantee of cross-entropy method based model predictive control. Experimental results validate the effectiveness and lightweight advantage of MIMO-WM for humanoid robot state prediction tasks.The code is open source at https://github.com/SEMHAQ/MIMO-WM.
-
-
 \textbf{Key words:} state space model; world model; state prediction; model predictive control; embodied intelligence
 
 \textbf{Citation:} X. Zhou, H. Yu, H. Zhang, et al. A lightweight world model based on multi-input multi-output state space model for humanoid robots. {\it Control Theory \& Applications}, xxxx, xx(x): xxx -- xxx}}
@@ -124,7 +122,7 @@ Mamba的选择性扫描机制虽然具有输入自适应能力, 但其参数量�
 
 本文的主要贡献如下:
 
-1)~~提出多输入多输出世界模型（Multi-Input Multi-Output World Model, MIMO-WM）, 通过对角SSM与sigmoid门控机制的结合, 在保持线性计算复杂度的同时实现更强的表达能力. 门控机制使模型能够根据输入内容动态调节信息流动, 参数量仅0.138M;
+1)~~提出多输入多输出世界模型（Multi-Input Multi-Output World Model, MIMO-WM）, 通过MIMO-SSM与sigmoid门控机制的结合, 在保持线性计算复杂度的同时实现更强的表达能力. 门控机制使模型能够根据输入内容动态调节信息流动, 参数量仅0.138M.
 
 2)~~在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上进行了多种子实验. 结果表明MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%, 同时参数量最少;
 
@@ -294,7 +292,7 @@ K[t] = \sum_{n=1}^{N} C_n \cdot \bar{b}_n \cdot \bar{a}_n^t,
 
 \subsection{整体架构}
 
-MIMO-WM的核心是\textbf{多输入多输出状态空间模型}（multi-input multi-output state space model, MIMO-SSM）架构. 传统SSM为单输入单输出（single-input single-output, SISO）结构,
+MIMO-WM的核心是多输入多输出状态空间模型（multi-input multi-output state space model, MIMO-SSM）架构. 传统SSM为单输入单输出（single-input single-output, SISO）结构,
 每个隐藏维度独立维护一个标量状态.
 MIMO-SSM将SSM扩展为多输入多输出结构:
 设输入序列为${\bm z}_t \in \mathbb{R}^D$, MIMO-SSM为每个输入维度$d=1,\ldots,D$分配一个
@@ -624,7 +622,7 @@ $\{{\bm a}^{(k)}\}_{k=1}^K \sim \mathcal{N}({\bm \mu}, \diag({\bm \sigma}^2))$, 
 
 本文采用MuJoCo\textsuperscript{\cite{28}}物理仿真器生成的medium数据集进行实验, 包含Humanoid(348维, 17维动作)和HumanoidStandup(376维, 17维动作)两个人形机器人数据集, 均通过Gymnasium\textsuperscript{\cite{29}}环境接口采集, 按8:2划分训练集和验证集, 输入数据经z-score归一化.
 
-对比方法包括LSTM-WM、GRU-WM、Transformer-WM、Mamba-WM和TCN-WM, 所有模型统一采用隐空间维度$D{=}96$, 层数$L{=}2$确保公平比较. MIMO-WM采用$D{=}96$, $d\_state{=}16$, $n\_layers{=}2$的配置. 所有实验使用5个随机种子42, 123, 456, 789, 1024运行并报告均值和标准差. 评价指标为MSE、$R^2$、推理时间和参数量. 训练采用100个epoch的AdamW优化器\textsuperscript{\cite{27}}, 学习率$5\times10^{-4}$, 余弦退火调度, 序列长度$T=32$, 批量大小1024, 梯度裁剪阈值1.0. 实验在NVIDIA RTX 3090 GPU上进行.
+对比方法包括LSTM-WM、GRU-WM、Transformer-WM、Mamba-WM和TCN-WM, 所有模型统一采用隐空间维度$D{=}96$, 层数$L{=}2$确保公平比较. MIMO-WM采用$D{=}96$, $N{=}16$, 层数$L{=}2$的配置. 所有实验使用5个随机种子42, 123, 456, 789, 1024运行并报告均值和标准差. 评价指标为MSE、$R^2$、推理时间和参数量. 训练采用100个epoch的AdamW优化器\textsuperscript{\cite{27}}, 学习率$5\times10^{-4}$, 余弦退火调度, 序列长度$T=32$, 批量大小1024, 梯度裁剪阈值1.0. 实验在NVIDIA RTX 3090 GPU上进行.
 
 \subsection{基准实验与性能分析}
 
@@ -678,7 +676,7 @@ TCN & 55.10$\pm$0.08 & 0.424$\pm$0.001 & 0.76 & 0.189 \\
 \par\endgroup
 \end{minipage}
 
-综合实验结果, MIMO-WM在Humanoid上取得最优精度, MSE为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%, 同时参数量最少(0.138M).
+综合两个数据集上的实验结果, MIMO-WM在Humanoid上取得最优精度, MSE为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%; 在HumanoidStandup上, MIMO-WM的MSE为$53.10\times10^{-2}$, $R^2$为0.444, 与Transformer并列最优, 但参数量仅0.138M, 为Transformer的45.7\%, 在所有方法中最为轻量.
 各方法在精度、参数量和推理速度三个维度的综合对比如图~2所示.
 
 \begingroup\centering
@@ -742,7 +740,7 @@ Table~4~~Prediction accuracy of MIMO-WM under different sequence lengths}\\
 \cmidrule(lr){2-3} \cmidrule(lr){4-5}
 $T$ & MSE$(\times10^{-2})$ & $R^2$ & MSE$(\times10^{-2})$ & $R^2$ \\
 \midrule
-8  & \textbf{20.14$\pm$0.13} & \textbf{0.765} & \textbf{50.02$\pm$0.03} & \textbf{0.478} \\
+8  & 20.14$\pm$0.13 & 0.765 & 50.02$\pm$0.03 & 0.478 \\
 16 & 19.23$\pm$0.14 & 0.764 & 51.29$\pm$0.11 & 0.461 \\
 32 & 21.18$\pm$0.04 & 0.735 & 54.65$\pm$0.04 & 0.428 \\
 64 & 21.28$\pm$0.16 & 0.708 & 58.80$\pm$0.11 & 0.380 \\
@@ -811,7 +809,7 @@ MPC实验表~5表明MIMO-WM的短期预测精度优于Mamba等SSM方法.
 
 \section{结论}
 
-本文提出了多输入多输出世界模型MIMO-WM, 通过对角SSM与sigmoid门控机制的结合, 在保持线性计算复杂度的同时实现了更强的表达能力.
+本文提出了多输入多输出世界模型MIMO-WM, 通过MIMO-SSM与sigmoid门控机制的结合, 在保持线性计算复杂度的同时实现了更强的表达能力.
 在Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明, MIMO-WM取得最优精度(MSE=$19.87{\times}10^{-2}$), 比Mamba-WM降低1.5\%; 参数量仅0.138M, 为所有方法中最轻量.
 理论分析证明了对角SSM递推与卷积模式的等价性、计算复杂度优势以及CEM-MPC的收敛性.
 
@@ -824,101 +822,42 @@ MPC实验表~5表明MIMO-WM的短期预测精度优于Mamba等SSM方法.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  参考文献
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vskip 12pt
+\vskip 6pt
  {\fontsize{7.8pt}{9.4pt}\selectfont
-\begin{thebibliography}{43} \vskip 7pt
+\begin{thebibliography}{99} \vskip 7pt
+\setlength{\parskip}{-2pt}
 \bibitem{1}HANSEN N, SU H, WANG X. TD-MPC2: Scalable, robust world models for continuous control. {\it International Conference on Learning Representations}, 2024.
-
-
 \bibitem{2}HA D, SCHMIDHUBER J. Recurrent world models facilitate policy evolution. {\it Advances in Neural Information Processing Systems}, 2018, 31: 2450--2462.
-
-
 \bibitem{3}HOCHREITER S, SCHMIDHUBER J. Long short-term memory. {\it Neural Computation}, 1997, 9(8): 1735--1780.
-
-
 \bibitem{4}VASWANI A, SHAZEER N, PARMAR N, et al. Attention is all you need. {\it Advances in Neural Information Processing Systems}, 2017, 30: 5998--6008.
-
-
 \bibitem{5}BROHAN A, BROWN N, CARBAJAL J, et al. RT-2: Vision-language-action models transfer web knowledge to robotic control. {\it Conference on Robot Learning}, 2023.
-
-
 \bibitem{6}GU A, GOEL K, RE C. Efficiently modeling long sequences with structured state spaces. {\it International Conference on Learning Representations}, 2022.
-
-
 \bibitem{7}GU A, GUPTA A, GOEL K, et al. On the parameterization and initialization of diagonal state space models. {\it Advances in Neural Information Processing Systems}, 2022, 35: 27682--27695.
-
-
 \bibitem{8}GU A, DAO T. Mamba: Linear-time sequence modeling with selective state spaces. {\it International Conference on Machine Learning}, 2024.
-
-
 \bibitem{9}WALEFFE R, BYRD W, VENKATARAMAN S, et al. Transformers are SSMs: Generalized models and efficient algorithms through structured state space duality. {\it International Conference on Machine Learning}, 2024.
-
-
 \bibitem{10}SHANG J, LI X, ZHANG Y, et al. Mamba policy: Selective state space models for robot visuomotor policy. {\it IEEE Robotics and Automation Letters}, 2025, 10(3): 2345--2352.
-
-
 \bibitem{11}OTA T. Decision Mamba: Reinforcement learning via sequence modeling with selective state spaces. {\it arXiv preprint arXiv:2403.19925}, 2024.
-
-
 \bibitem{12}AHAMED M A, CHENG Q. TimeMachine: A time series is worth 4 Mambas for long-term forecasting. {\it European Conference on Artificial Intelligence}, 2024: 1688--1695.
-
-
 \bibitem{13}HAFNER D, LILLICRAP T, BA J, et al. Dream to control: Learning behaviors by latent imagination. {\it Advances in Neural Information Processing Systems}, 2019, 32: 1217--1228.
-
-
 \bibitem{14}HAFNER D, PASUKONIS J, BA J, et al. Mastering diverse domains through world models. {\it arXiv preprint arXiv:2301.04104}, 2023.
-
-
 \bibitem{15}NAGABANDI A, KAHN G, FEARING R S, et al. Neural network dynamics for model-based deep reinforcement learning with model-free fine-tuning. {\it IEEE International Conference on Robotics and Automation}, 2018: 3543--3550.
-
-
 \bibitem{16}ZHANG Yi-gang, HUANG Dao-ping, LIU Yi-qi. Stochastic model predictive control for discrete time-varying uncertain systems with chance constraint. {\it Control Theory \& Applications}, 2025, 42(12): 2459--2467.\\(张逸刚, 黄道平, 刘乙奇. 受概率约束的离散时变不确定系统的随机模型预测控制. 控制理论与应用, 2025, 42(12): 2459--2467.)
-
-
 \bibitem{17}WANG Juan, ZHAO Cheng-jing, YANG Zhi-jie. Trajectory tracking control of quadcopter UAV based on MPC iterative learning. {\it Control Theory \& Applications}, 2025, 42(12): 2528--2534.\\(王娟, 赵成璟, 杨智杰. 基于MPC迭代学习的四旋翼无人机轨迹跟踪控制. 控制理论与应用, 2025, 42(12): 2528--2534.)
-
-
 \bibitem{18}WARDEN P, SITUNAYAKE D. TinyML: Machine learning with TensorFlow Lite on Arduino and ultra-low-power microcontrollers. {\it O'Reilly Media}, 2019.
-
-
 \bibitem{19}HU Y, WANG W, LI L, et al. A survey on world models for autonomous driving. {\it arXiv preprint arXiv:2403.02622}, 2024.
-
-
 \bibitem{20}GU A, DAO T, ERMON S, et al. HiPPO: Recurrent memory with optimal polynomial projections. {\it Advances in Neural Information Processing Systems}, 2020, 33: 1474--1487.
-
-
 \bibitem{21}SMITH J T, WARRINGTON A, LINDERMAN S W. Simplified state space layers for sequence modeling. {\it International Conference on Learning Representations}, 2023.
-
-
 \bibitem{22}FU D, DAO T, SAAB K, et al. Hungry hungry hippos: Towards language modeling with state space models. {\it International Conference on Learning Representations}, 2023.
-
-
 \bibitem{23}LIU J, LIU M, WANG Z, et al. RoboMamba: Efficient vision-language-action model for robotic reasoning and manipulation. {\it arXiv preprint arXiv:2406.04339}, 2024.
-
-
 \bibitem{24}CHUA K, CALANDRA R, MCALLISTER R, et al. Deep reinforcement learning in a handful of trials using probabilistic dynamics models. {\it Advances in Neural Information Processing Systems}, 2018, 31: 4754--4765.
-
-
 \bibitem{25}WANG Ding-chao, LI Xi-hong, HE De-feng, et al. Distributed EMPC of nonlinear systems with communication delays. {\it Control Theory \& Applications}, 2025, 42(12): 2449--2458.\\(王定超, 李西宏, 何德峰, 等. 通信时滞非线性系统分布式经济模型预测控制. 控制理论与应用, 2025, 42(12): 2449--2458.)
-
-
 \bibitem{26}HENDRYCKS D, GIMPEL K. Gaussian error linear units (GELUs). {\it arXiv preprint arXiv:1606.08415}, 2016.
-
-
 \bibitem{27}LOSHCHILOV I, HUTTER F. Decoupled weight decay regularization. {\it International Conference on Learning Representations}, 2019.
-
-
 \bibitem{28}TODOROV E, EREZ T, TASSA Y. MuJoCo: A physics engine for model-based control. {\it IEEE/RSJ International Conference on Intelligent Robots and Systems}, 2012: 5026--5033.
-
-
 \bibitem{29}BROCKMAN G, CHEUNG V, PETTERSSON L, et al. OpenAI Gym. {\it arXiv preprint arXiv:1606.01540}, 2016.
-
-
-
-
 \end{thebibliography}}
 
- \vskip 7pt
+ \vskip 2pt
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 作者简历
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
