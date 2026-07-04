@@ -56,7 +56,7 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \begin{center}
 \parbox{\textwidth}{\setlength{\parindent}{1em}
 {\centering\large\textbf{A Lightweight World Model Based on Multi-Input Multi-Output State Space Model for Humanoid Robots}} \vspace{-1.2mm}
-\begingroup\centering
+\begingroup\centering \\
 ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG Wei$^{3}$,~~CHEN Lu$^{4}$\\[2pt]
 \scriptsize{(1. School of Artificial Intelligence and Robotics, Hunan University of Technology and Business, Changsha Hunan 410205, China;\\
 2. Xiangjiang Laboratory, Changsha Hunan 410205, China;\\
@@ -89,10 +89,7 @@ Humanoid robot state prediction faces the dual challenges of accuracy and comput
 
 具身智能的核心在于智能体通过与物理环境的实时交互来学习、进化并执行任务\textsuperscript{\cite{1}}.
 机器人作为具身智能的重要载体, 其高维度、强非线性及欠驱动特性使得``感知--决策--控制"的闭环实现极具挑战.
-其中, 世界模型\textsuperscript{\cite{2}}作为环境动力学的内部表征, 其核心功能包括:
-(1)给定当前状态和动作预测未来状态(状态转移建模),
-(2)预测奖励信号和终止条件,
-(3)基于预测能力支持规划与决策.
+其中, 世界模型\textsuperscript{\cite{2}}作为环境动力学的内部表征, 其核心功能是通过状态转移建模实现对未来状态的预测, 并基于预测能力支持规划与决策.
 在模型预测控制（model predictive control, MPC）框架中,
 世界模型通过前向模拟多步未来状态轨迹为优化求解提供动力学约束,
 其预测精度和推理速度直接决定了控制性能.
