@@ -109,7 +109,7 @@ Humanoid robot state prediction faces the dual challenges of accuracy and comput
 然而, 将SSM应用于具身智能领域的世界模型构建尚处于起步阶段.
 现有工作主要集中在视觉感知和语言理解领域,
 而在机器人状态预测和控制方面的探索相对有限.
-近期, Mamba策略网络\textsuperscript{\cite{20,21}}和SSM时序预测\textsuperscript{\cite{22}}等工作开始将SSM引入机器人和序列决策领域,
+近期, Mamba策略网络\textsuperscript{\cite{10,11}}和SSM时序预测\textsuperscript{\cite{12}}等工作开始将SSM引入机器人和序列决策领域,
 但前者侧重于策略学习, 后者侧重于时序数据预测,
 均未涉及面向机器人状态预测的世界模型构建.
 机器人状态预测任务面临三重挑战: 状态维度高, 涉及多个关节的耦合动力学; 动作-状态映射具有强非线性; 且控制回路要求毫秒级的推理延迟.
@@ -142,18 +142,18 @@ Mamba的选择性扫描机制虽然具有输入自适应能力, 但其参数量�
 其核心思想是智能体通过构建环境的内部模型来进行预测和规划.
 在深度学习时代, Ha和Schmidhuber提出了基于变分自编码器VAE和循环神经网络的世界模型框架,
 通过学习压缩的环境表征来实现策略学习.
-Hafner等人\textsuperscript{\cite{10}}提出了Dreamer系列方法, 利用潜在动力学模型在想象中进行策略优化,
+Hafner等人\textsuperscript{\cite{13}}提出了Dreamer系列方法, 利用潜在动力学模型在想象中进行策略优化,
 在多个连续控制基准上取得了领先性能.
-DreamerV3\textsuperscript{\cite{11}}进一步统一了离散和连续动作空间的处理, 展示了世界模型的通用性.
+DreamerV3\textsuperscript{\cite{14}}进一步统一了离散和连续动作空间的处理, 展示了世界模型的通用性.
 
 在机器人领域, Michels等人探索了利用世界模型进行视觉伺服控制.
-Nagabandi等人\textsuperscript{\cite{12,13,14}}将神经网络动力学模型与模型预测控制相结合, 实现了机器人腿部运动的快速适应.
+Nagabandi等人\textsuperscript{\cite{15,16,17}}将神经网络动力学模型与模型预测控制相结合, 实现了机器人腿部运动的快速适应.
 近期, RT-2\textsuperscript{\cite{5}}将大规模视觉-语言模型与机器人动作空间对齐,
 展示了基础模型在机器人控制中的潜力.
 然而, 这些方法普遍面临计算开销大、难以满足实时控制要求的问题.
-在高效计算方面, TinyML\textsuperscript{\cite{15}}和模型压缩技术为资源受限平台上的深度学习部署提供了解决方案.
+在高效计算方面, TinyML\textsuperscript{\cite{18}}和模型压缩技术为资源受限平台上的深度学习部署提供了解决方案.
 在仿真到真实迁移方面, 域随机化和快速电机适应RMA等方法缩小了仿真与真实机器人之间的差距.
-世界模型在自动驾驶领域也得到了广泛关注\textsuperscript{\cite{16}}, 连续-离散状态空间模型为混合系统建模提供了新思路.
+世界模型在自动驾驶领域也得到了广泛关注\textsuperscript{\cite{19}}, 连续-离散状态空间模型为混合系统建模提供了新思路.
 本文提出的MIMO-WM旨在以极低的计算开销实现高质量的状态预测,
 为机器人状态预测提供一种轻量级SSM-Attention混合解决方案.
 
@@ -161,7 +161,7 @@ Nagabandi等人\textsuperscript{\cite{12,13,14}}将神经网络动力学模型�
 
 SSM源于控制理论中的线性系统描述,
 近年来在深度学习领域引起了广泛关注.
-Gu等人\textsuperscript{\cite{17}}提出的HiPPO框架通过最优多项式投影解决了连续时间记忆问题,
+Gu等人\textsuperscript{\cite{20}}提出的HiPPO框架通过最优多项式投影解决了连续时间记忆问题,
 为SSM在序列建模中的应用奠定了理论基础.
 S4\textsuperscript{\cite{6}}通过结构化参数化
 解决了SSM在长程依赖建模中的数值稳定性问题,
@@ -170,8 +170,8 @@ S4\textsuperscript{\cite{6}}通过结构化参数化
 在S4的基础上, 研究者提出了多种改进方案.
 S4D简化了对角SSM的参数化, 直接使用复数对角矩阵,
 在保持性能的同时显著降低了实现复杂度.
-并行扫描算法\textsuperscript{\cite{18}}也被用于加速SSM的训练过程.
-H3\textsuperscript{\cite{19}}结合了SSM与门控注意力, 在语言建模中取得了与Transformer相当的性能.
+并行扫描算法\textsuperscript{\cite{21}}也被用于加速SSM的训练过程.
+H3\textsuperscript{\cite{22}}结合了SSM与门控注意力, 在语言建模中取得了与Transformer相当的性能.
 
 Mamba是SSM发展的一个重要里程碑.
 它引入了选择性扫描机制, 使SSM的状态更新能够根据输入内容动态调整,
@@ -188,7 +188,7 @@ MIMO-SSM通过多输入多输出结构, 在保持对角SSM计算效率的同时�
 
 近期SSM类方法开始在机器人领域得到应用.
 在策略学习方面, Mamba被用于替代Transformer作为策略网络的主干, 实现了更高效的序列决策,
-其中Mamba策略网络}在连续控制任务中取得了与Transformer策略网络相当的性能,
+其中Mamba策略网络在连续控制任务中取得了与Transformer策略网络相当的性能,
 但推理速度提升了2--3倍.
 在时序预测方面, SSM被用于长程多变量时序预测, 利用其线性复杂度和长程建模优势.
 在世界模型方面, Dreamer系列和TD-MPC等方法主要基于循环神经网络或潜在动力学模型进行环境建模,
@@ -208,11 +208,11 @@ MIMO-WM以极低的参数开销实现状态转移预测, 并通过MPC框架验�
 
 从架构设计角度出发, GRU通过简化LSTM的门控结构减少了参数量.
 TCN利用因果卷积和膨胀卷积实现了高效的序列建模.
-SSM类方法}通过线性递推结构实现了$O(T)$的每步推理复杂度和$O(1)$的单步延迟,
+SSM类方法通过线性递推结构实现了$O(T)$的每步推理复杂度和$O(1)$的单步延迟,
 在长序列场景下具有显著的计算优势.
 本文的MIMO-WM直接从轻量级架构设计出发, 以极低的参数开销实现高效的状态预测.
 TCN利用因果卷积和膨胀卷积实现了高效的序列建模.
-SSM类方法}通过线性递推结构实现了$O(T)$的每步推理复杂度和$O(1)$的单步延迟,
+SSM类方法通过线性递推结构实现了$O(T)$的每步推理复杂度和$O(1)$的单步延迟,
 在长序列场景下具有显著的计算优势.
 本文的MIMO-WM直接从轻量级架构设计出发, 以极低的参数开销实现高效的状态预测.
 
@@ -224,9 +224,9 @@ MPC的核心在于动力学模型的准确性: 模型越精确, 控制性能越�
 传统的MPC使用解析模型, 但在复杂环境中获取精确的解析模型往往困难重重.
 
 将学习模型与MPC结合是一个活跃的研究方向.
-Nagabandi等人}展示了神经网络动力学模型在MPC中的有效性.
+Nagabandi等人展示了神经网络动力学模型在MPC中的有效性.
 Chua等人\textsuperscript{\cite{24}}提出了PETS方法, 通过概率集成模型处理模型不确定性.
-Hafner等人}的Dreamer方法则将潜在动力学模型与MPC相结合.
+Hafner等人的Dreamer方法则将潜在动力学模型与MPC相结合.
 本文将MIMO-WM嵌入MPC框架, 验证其在规划决策中的可行性\textsuperscript{\cite{25}}.
 
 \section{问题描述与预备知识}
@@ -295,7 +295,7 @@ K[t] = \sum_{n=1}^{N} C_n \cdot \bar{b}_n \cdot \bar{a}_n^t,
 
 \subsection{整体架构}
 
-MIMO-WM的核心是\textbf多输入多输出状态空间模型（multi-input multi-output state space model, MIMO-SSM）架构. 传统SSM为单输入单输出（single-input single-output, SISO）结构,
+MIMO-WM的核心是\textbf{多输入多输出状态空间模型}（multi-input multi-output state space model, MIMO-SSM）架构. 传统SSM为单输入单输出（single-input single-output, SISO）结构,
 每个隐藏维度独立维护一个标量状态.
 MIMO-SSM将SSM扩展为多输入多输出结构:
 设输入序列为${\bm z}_t \in \mathbb{R}^D$, MIMO-SSM为每个输入维度$d=1,\ldots,D$分配一个
@@ -848,31 +848,31 @@ MPC实验表~5表明MIMO-WM的短期预测精度优于Mamba等SSM方法.
 
 \bibitem{9}WALEFFE R, BYRD W, VENKATARAMAN S, et al. Transformers are SSMs: Generalized models and efficient algorithms through structured state space duality. {\it International Conference on Machine Learning}, 2024.
 
-\bibitem{10}HAFNER D, LILLICRAP T, BA J, et al. Dream to control: Learning behaviors by latent imagination. {\it Advances in Neural Information Processing Systems}, 2019, 32: 1217--1228.
+\bibitem{13}HAFNER D, LILLICRAP T, BA J, et al. Dream to control: Learning behaviors by latent imagination. {\it Advances in Neural Information Processing Systems}, 2019, 32: 1217--1228.
 
-\bibitem{11}HAFNER D, PASUKONIS J, BA J, et al. Mastering diverse domains through world models. {\it arXiv preprint arXiv:2301.04104}, 2023.
+\bibitem{14}HAFNER D, PASUKONIS J, BA J, et al. Mastering diverse domains through world models. {\it arXiv preprint arXiv:2301.04104}, 2023.
 
-\bibitem{12}NAGABANDI A, KAHN G, FEARING R S, et al. Neural network dynamics for model-based deep reinforcement learning with model-free fine-tuning. {\it IEEE International Conference on Robotics and Automation}, 2018: 3543--3550.
+\bibitem{15}NAGABANDI A, KAHN G, FEARING R S, et al. Neural network dynamics for model-based deep reinforcement learning with model-free fine-tuning. {\it IEEE International Conference on Robotics and Automation}, 2018: 3543--3550.
 
-\bibitem{13}ZHANG Yi-gang, HUANG Dao-ping, LIU Yi-qi. Stochastic model predictive control for discrete time-varying uncertain systems with chance constraint. {\it Control Theory \& Applications}, 2025, 42(12): 2459--2467.\\(张逸刚, 黄道平, 刘乙奇. 受概率约束的离散时变不确定系统的随机模型预测控制. 控制理论与应用, 2025, 42(12): 2459--2467.)
+\bibitem{16}ZHANG Yi-gang, HUANG Dao-ping, LIU Yi-qi. Stochastic model predictive control for discrete time-varying uncertain systems with chance constraint. {\it Control Theory \& Applications}, 2025, 42(12): 2459--2467.\\(张逸刚, 黄道平, 刘乙奇. 受概率约束的离散时变不确定系统的随机模型预测控制. 控制理论与应用, 2025, 42(12): 2459--2467.)
 
-\bibitem{14}WANG Juan, ZHAO Cheng-jing, YANG Zhi-jie. Trajectory tracking control of quadcopter UAV based on MPC iterative learning. {\it Control Theory \& Applications}, 2025, 42(12): 2528--2534.\\(王娟, 赵成璟, 杨智杰. 基于MPC迭代学习的四旋翼无人机轨迹跟踪控制. 控制理论与应用, 2025, 42(12): 2528--2534.)
+\bibitem{17}WANG Juan, ZHAO Cheng-jing, YANG Zhi-jie. Trajectory tracking control of quadcopter UAV based on MPC iterative learning. {\it Control Theory \& Applications}, 2025, 42(12): 2528--2534.\\(王娟, 赵成璟, 杨智杰. 基于MPC迭代学习的四旋翼无人机轨迹跟踪控制. 控制理论与应用, 2025, 42(12): 2528--2534.)
 
-\bibitem{15}WARDEN P, SITUNAYAKE D. TinyML: Machine learning with TensorFlow Lite on Arduino and ultra-low-power microcontrollers. {\it O'Reilly Media}, 2019.
+\bibitem{18}WARDEN P, SITUNAYAKE D. TinyML: Machine learning with TensorFlow Lite on Arduino and ultra-low-power microcontrollers. {\it O'Reilly Media}, 2019.
 
-\bibitem{16}HU Y, WANG W, LI L, et al. A survey on world models for autonomous driving. {\it arXiv preprint arXiv:2403.02622}, 2024.
+\bibitem{19}HU Y, WANG W, LI L, et al. A survey on world models for autonomous driving. {\it arXiv preprint arXiv:2403.02622}, 2024.
 
-\bibitem{17}GU A, DAO T, ERMON S, et al. HiPPO: Recurrent memory with optimal polynomial projections. {\it Advances in Neural Information Processing Systems}, 2020, 33: 1474--1487.
+\bibitem{20}GU A, DAO T, ERMON S, et al. HiPPO: Recurrent memory with optimal polynomial projections. {\it Advances in Neural Information Processing Systems}, 2020, 33: 1474--1487.
 
-\bibitem{18}SMITH J T, WARRINGTON A, LINDERMAN S W. Simplified state space layers for sequence modeling. {\it International Conference on Learning Representations}, 2023.
+\bibitem{21}SMITH J T, WARRINGTON A, LINDERMAN S W. Simplified state space layers for sequence modeling. {\it International Conference on Learning Representations}, 2023.
 
-\bibitem{19}FU D, DAO T, SAAB K, et al. Hungry hungry hippos: Towards language modeling with state space models. {\it International Conference on Learning Representations}, 2023.
+\bibitem{22}FU D, DAO T, SAAB K, et al. Hungry hungry hippos: Towards language modeling with state space models. {\it International Conference on Learning Representations}, 2023.
 
-\bibitem{20}SHANG J, LI X, ZHANG Y, et al. Mamba policy: Selective state space models for robot visuomotor policy. {\it IEEE Robotics and Automation Letters}, 2025, 10(3): 2345--2352.
+\bibitem{10}SHANG J, LI X, ZHANG Y, et al. Mamba policy: Selective state space models for robot visuomotor policy. {\it IEEE Robotics and Automation Letters}, 2025, 10(3): 2345--2352.
 
-\bibitem{21}OTA T. Decision Mamba: Reinforcement learning via sequence modeling with selective state spaces. {\it arXiv preprint arXiv:2403.19925}, 2024.
+\bibitem{11}OTA T. Decision Mamba: Reinforcement learning via sequence modeling with selective state spaces. {\it arXiv preprint arXiv:2403.19925}, 2024.
 
-\bibitem{22}AHAMED M A, CHENG Q. TimeMachine: A time series is worth 4 Mambas for long-term forecasting. {\it European Conference on Artificial Intelligence}, 2024: 1688--1695.
+\bibitem{12}AHAMED M A, CHENG Q. TimeMachine: A time series is worth 4 Mambas for long-term forecasting. {\it European Conference on Artificial Intelligence}, 2024: 1688--1695.
 
 \bibitem{23}LIU J, LIU M, WANG Z, et al. RoboMamba: Efficient vision-language-action model for robotic reasoning and manipulation. {\it arXiv preprint arXiv:2406.04339}, 2024.
 
