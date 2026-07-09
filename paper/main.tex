@@ -8,7 +8,7 @@
 % 标题，基金项目，作者，地址定义
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatother
-\title{\LARGE\textbf{基于多输入多输出状态空间模型的人形机器人轻量级世界模型}\\
+\title{\LARGE\textbf{MIMO-WM: 面向人形机器人的轻量级状态空间世界模型}\\
 \footnotetext{\scriptsize \hskip -6pt
 \hspace*{-0.1em}收稿日期: xxxx$-$xx$-$xx; 录用日期: xxxx$-$xx$-$xx.\\
 \hspace*{1.1em}$^{\dag}$通讯作者. E-mail: \mbox{semhaqx@gmail.com}.\\
@@ -23,7 +23,7 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \scriptsize 3. 湖南工商大学~计算机学院, 湖南~长沙~410205;\\
 \scriptsize 4. 湖南工商大学~前沿交叉学院, 湖南~长沙~410205) \\}
 \date{}
-\fancyhead[CO]{{\footnotesize 周新民等: 基于多输入多输出状态空间模型的人形机器人轻量级世界模型}}
+\fancyhead[CO]{{\footnotesize 周新民等: MIMO-WM轻量级状态空间世界模型}}
 \setlength{\abovedisplayskip}{1.5mm}
 \setlength{\belowdisplayskip}{1.5mm}
 \maketitle
@@ -36,14 +36,14 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \parbox{\textwidth}{\setlength{\parindent}{1em}
 {\footnotesize {\CJKfamily{hei} 摘要:}
 针对人形机器人高维状态预测中精度与计算效率难以兼顾的问题, 本文提出一种基于多输入多输出状态空间模型的轻量级世界模型MIMO-WM.
-该模型通过并行扫描算法实现高效序列建模, 并引入sigmoid门控机制增强表达能力.
-在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明, MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比次优方法降低1.5\%, 参数量仅0.138M.
+该模型对每个输入维度独立维护状态空间, 并通过sigmoid门控实现维度间的轻量级交互, 以增强对高维动力学系统的表达能力.
+在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明, MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比次优方法降低1.5\%; 参数量仅0.138M, 比次优方法减少38.4\%.
 理论分析证明了对角状态空间模型递推与卷积模式的等价性、计算复杂度优势以及交叉熵方法采样式模型预测控制的收敛性.
 实验结果验证了MIMO-WM在人形机器人状态预测任务中的有效性和轻量化优势.代码已开源在https://github.com/SEMHAQ/MIMO-WM.
 
 {\CJKfamily{hei} 关键词:} 状态空间模型; 世界模型; 状态预测; 模型预测控制; 具身智能
 
-{\CJKfamily{hei}引用格式:} 周新民, 余焕杰, 张慧慧, 等. 基于多输入多输出状态空间模型的人形机器人轻量级世界模型. 控制理论与应用, xxxx, xx(x): xxx -- xxx\\\vspace*{-16pt}
+{\CJKfamily{hei}引用格式:} 周新民, 余焕杰, 张慧慧, 等. MIMO-WM: 面向人形机器人的轻量级状态空间世界模型. 控制理论与应用, xxxx, xx(x): xxx -- xxx\\\vspace*{-16pt}
 
 \textbf{DOI:} 10.7641/CTA.202x.xxxxx
 
@@ -55,7 +55,7 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \vspace{.1cm}
 \begin{center}
 \parbox{\textwidth}{\setlength{\parindent}{1em}
-{\centering\large\textbf{A Lightweight World Model Based on Multi-Input Multi-Output State Space Model for Humanoid Robots}} \vspace{-1.2mm}
+{\centering\large\textbf{MIMO-WM: A Lightweight State Space World Model for Humanoid Robots}} \vspace{-1.2mm}
 \begingroup\centering \\
 ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG Wei$^{3}$,~~CHEN Lu$^{4}$\\[2pt]
 \scriptsize{(1. School of Artificial Intelligence and Robotics, Hunan University of Technology and Business, Changsha Hunan 410205, China;\\
@@ -65,11 +65,11 @@ ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG W
 \end{center}
 
 \vspace{-10pt}\footnotesize{\textbf{Abstract:}
-Humanoid robot state prediction faces the dual challenges of accuracy and computational efficiency. This paper proposes MIMO-WM, a lightweight world model based on multi-input multi-output state space model architecture, which achieves efficient sequence modeling through parallel scanning and enhances expressiveness via a sigmoid gating mechanism. Multi-seed experiments on Gymnasium MuJoCo Humanoid and HumanoidStandup benchmarks demonstrate that MIMO-WM achieves the best prediction accuracy on Humanoid with mean squared error of $19.87\times10^{-2}$, outperforming the second-best method by 1.5 percent, while requiring only 0.138 million parameters. Theoretical analysis proves the equivalence of recurrent and convolution computation modes, the computational complexity advantage, and the convergence guarantee of cross-entropy method based model predictive control. Experimental results validate the effectiveness and lightweight advantage of MIMO-WM for humanoid robot state prediction tasks.The code is open source at https://github.com/SEMHAQ/MIMO-WM. 
+Humanoid robot state prediction faces the dual challenges of accuracy and computational efficiency. This paper proposes MIMO-WM, a lightweight world model based on multi-input multi-output state space model architecture, which maintains an independent state space for each input dimension and introduces lightweight cross-dimension interaction via a sigmoid gating mechanism for enhanced expressiveness on high-dimensional dynamics. Multi-seed experiments on Gymnasium MuJoCo Humanoid and HumanoidStandup benchmarks demonstrate that MIMO-WM achieves the best prediction accuracy on Humanoid with mean squared error of $19.87\times10^{-2}$, outperforming the second-best method by 1.5 percent, while requiring only 0.138 million parameters, 38.4\% fewer than the second-best method. Theoretical analysis proves the equivalence of recurrent and convolution computation modes, the computational complexity advantage, and the convergence guarantee of cross-entropy method based model predictive control. Experimental results validate the effectiveness and lightweight advantage of MIMO-WM for humanoid robot state prediction tasks.The code is open source at https://github.com/SEMHAQ/MIMO-WM. 
 
 \textbf{Key words:} state space model; world model; state prediction; model predictive control; embodied intelligence
 
-\textbf{Citation:} X. Zhou, H. Yu, H. Zhang, et al. A lightweight world model based on multi-input multi-output state space model for humanoid robots. {\it Control Theory \& Applications}, xxxx, xx(x): xxx -- xxx}}
+\textbf{Citation:} X. Zhou, H. Yu, H. Zhang, et al. MIMO-WM: A lightweight state space world model for humanoid robots. {\it Control Theory \& Applications}, xxxx, xx(x): xxx -- xxx}}
 \end{center}
 
 \renewcommand\refname{\normalsize{{\CJKfamily{hei}参考文献}}}
@@ -87,7 +87,8 @@ Humanoid robot state prediction faces the dual challenges of accuracy and comput
 \section{引言}
 
 具身智能的核心在于智能体通过与物理环境的实时交互来学习、进化并执行任务\textsuperscript{\cite{1}}.
-机器人作为具身智能的重要载体, 其高维度、强非线性及欠驱动特性使得``感知--决策--控制"的闭环实现极具挑战.
+人形机器人作为具身智能的重要载体, 其高维度状态空间、
+全向平衡约束及多关节耦合动力学使得``感知--决策--控制"的闭环实现极具挑战.
 其中, 世界模型\textsuperscript{\cite{2}}作为环境动力学的内部表征, 其核心功能是通过状态转移建模实现对未来状态的预测, 并基于预测能力支持规划与决策.
 在模型预测控制（model predictive control, MPC）框架中,
 世界模型通过前向模拟多步未来状态轨迹为优化求解提供动力学约束,
@@ -111,14 +112,14 @@ Humanoid robot state prediction faces the dual challenges of accuracy and comput
 近期, Mamba策略网络\textsuperscript{\cite{10,11}}和SSM时序预测\textsuperscript{\cite{12}}等工作开始将SSM引入机器人和序列决策领域,
 但前者侧重于策略学习, 后者侧重于时序数据预测,
 均未涉及面向机器人状态预测的世界模型构建.
-机器人状态预测任务面临三重挑战: 状态维度高, 涉及多个关节的耦合动力学; 动作-状态映射具有强非线性; 且控制回路要求毫秒级的推理延迟.
+人形机器人状态预测任务面临三重挑战: 状态维度高达348$\sim$376维, 涉及全身多关节的强耦合动力学; 双足支撑切换导致动作-状态映射具有时变非线性和非连续性; 且实时控制回路要求毫秒级的推理延迟.
 这些特点要求世界模型在保持高预测精度的同时, 具备极低的计算开销.
 
-更重要的是, 现有SSM方法在应用于机器人状态预测时存在根本性局限:
+更重要的是, 现有SSM方法在应用于人形机器人状态预测时存在根本性局限:
 S4D采用固定对角状态矩阵, 无法根据输入内容调整动力学特性,
-而机器人系统的动力学参数如摩擦系数、惯性矩会随关节配置和运动状态变化;
+而人形机器人的动力学参数如足地接触刚度、惯性矩会随支撑相切换和关节配置变化;
 Mamba的选择性扫描机制虽然具有输入自适应能力, 但其参数量和计算开销较大,
-不适合资源受限的机器人部署场景.
+不适合资源受限的人形机器人机载部署场景.
 因此, 设计一种既能保持对角SSM的计算效率、又能适应机器人动力学变化的新型SSM架构, 是一个亟待解决的关键问题.
 
 本文的主要贡献如下:
@@ -135,7 +136,7 @@ Mamba的选择性扫描机制虽然具有输入自适应能力, 但其参数量�
 
 \section{相关工作}
 
-\subsection{机器人世界模型}
+\subsection{人形机器人世界模型}
 
 世界模型的概念最早可追溯到Karl Friston的主动推理理论,
 其核心思想是智能体通过构建环境的内部模型来进行预测和规划.
@@ -145,7 +146,8 @@ Hafner等人\textsuperscript{\cite{13}}提出了Dreamer系列方法, 利用潜�
 在多个连续控制基准上取得了领先性能.
 DreamerV3\textsuperscript{\cite{14}}进一步统一了离散和连续动作空间的处理, 展示了世界模型的通用性.
 
-在机器人领域, Nagabandi等人\textsuperscript{\cite{15,16,17}}将神经网络动力学模型与模型预测控制相结合, 实现了机器人腿部运动的快速适应.
+在人形机器人领域, 动力学模型与模型预测控制相结合的思路已被广泛探索\textsuperscript{\cite{15,16,17}}.
+然而, 人形机器人的高维状态空间和双足动态平衡特性对世界模型的预测精度和实时性提出了苛刻要求.
 近期, RT-2\textsuperscript{\cite{5}}将大规模视觉-语言模型与机器人动作空间对齐,
 展示了基础模型在机器人控制中的潜力.
 然而, 这些方法普遍面临计算开销大、难以满足实时控制要求的问题.
@@ -205,10 +207,6 @@ MIMO-WM以极低的参数开销实现状态转移预测, 并通过MPC框架验�
 然而, 这些方法通常是事后压缩, 可能导致性能损失.
 
 从架构设计角度出发, GRU通过简化LSTM的门控结构减少了参数量.
-TCN利用因果卷积和膨胀卷积实现了高效的序列建模.
-SSM类方法通过线性递推结构实现了$O(T)$的每步推理复杂度和$O(1)$的单步延迟,
-在长序列场景下具有显著的计算优势.
-本文的MIMO-WM直接从轻量级架构设计出发, 以极低的参数开销实现高效的状态预测.
 TCN利用因果卷积和膨胀卷积实现了高效的序列建模.
 SSM类方法通过线性递推结构实现了$O(T)$的每步推理复杂度和$O(1)$的单步延迟,
 在长序列场景下具有显著的计算优势.
@@ -340,9 +338,9 @@ MIMO块是MIMO-WM的核心组件.
 {\bm h}_t^{(d)} = \bar{{\bm A}}^{(d)}{\bm h}_{t-1}^{(d)} + \bar{{\bm B}}^{(d)}\tilde{z}_t^{(d)},
 \end{eqnarray}
 其中$\bar{{\bm A}}^{(d)} \in \mathbb{C}^{N \times N}$为第$d$维的对角状态矩阵, 各维度参数独立.
-SSM变换的输出${\bm h}_t$经sigmoid门控调节:
+SSM输出由${\bm y}_t^{(d)} = {\bm C}^{(d)}{\bm h}_t^{(d)} + {\bm D}^{(d)}\tilde{z}_t^{(d)}$计算, 记${\bm y}_t$为SSM的输出向量. ${\bm y}_t$经sigmoid门控调节:
 \begin{equation}
-{\bm o}_t = {\bm h}_t \odot \sigma({\bm W}_g\tilde{{\bm z}}_t + {\bm b}_g),
+{\bm o}_t = {\bm y}_t \odot \sigma({\bm W}_g\tilde{{\bm z}}_t + {\bm b}_g),
 \end{equation}
 其中${\bm W}_g \in \mathbb{R}^{D \times D}$为门控权重, $\sigma$为sigmoid函数.
 门控机制根据输入内容动态控制SSM输出的信息保留比例.
@@ -356,8 +354,8 @@ MIMO-WM的前向推理过程如下:
 \begin{Ste}编码: ${\bm z} \leftarrow \text{Encoder}([{\bm s}_{0:T{-}1}; {\bm a}_{0:T{-}1}])$.\end{Ste}
 \begin{Ste}对$\ell = 1, \ldots, L$层MIMO块:
 归一化$\tilde{{\bm z}} \leftarrow \text{LayerNorm}({\bm z})$,
-并行SSM${\bm h} \leftarrow \text{DiagSSM}(\tilde{{\bm z}})$,
-门控${\bm o} \leftarrow {\bm h} \odot \sigma({\bm W}_g\tilde{{\bm z}} + {\bm b}_g)$,
+并行SSM${\bm y} \leftarrow \text{DiagSSM}(\tilde{{\bm z}})$,
+门控${\bm o} \leftarrow {\bm y} \odot \sigma({\bm W}_g\tilde{{\bm z}} + {\bm b}_g)$,
 残差${\bm z} \leftarrow {\bm z} + {\bm W}_o{\bm o} + {\bm b}_o$.\end{Ste}
 \begin{Ste}解码: $\hat{{\bm s}}_T \leftarrow {\bm s}_{T{-}1} + \text{Decoder}({\bm z}_{T{-}1})$.\end{Ste}
 
@@ -540,16 +538,16 @@ $\mathcal{N}({\bm \mu}^{(k)}, {\bm \Sigma}^{(k)})$弱收敛到退化分布$\delt
 \label{cor:gate}
 门控输出为
 \begin{equation}
-{\bm o}_t = {\bm h}_t \odot \sigma({\bm W}_g\tilde{{\bm z}}_t + {\bm b}_g).
+{\bm o}_t = {\bm y}_t \odot \sigma({\bm W}_g\tilde{{\bm z}}_t + {\bm b}_g).
 \end{equation}
 当$\sigma \to {\bm 0}$时SSM输出被完全抑制, 当$\sigma \to {\bm 1}$时退化为无门控SSM.
 门控参数的梯度为
 \begin{equation}
 \frac{\partial \mathcal{L}}{\partial {\bm W}_g}
 = \frac{\partial \mathcal{L}}{\partial {\bm o}_t}
-\odot {\bm h}_t \odot \sigma'(\cdot) \tilde{{\bm z}}_t^{\rm T},
+\odot {\bm y}_t \odot \sigma'(\cdot) \tilde{{\bm z}}_t^{\rm T},
 \end{equation}
-其中$\sigma'$为sigmoid的导数. 该梯度受SSM输出${\bm h}_t$调控, 使门控能自适应学习何时信任SSM预测.
+其中$\sigma'$为sigmoid的导数. 该梯度受SSM输出${\bm y}_t$调控, 使门控能自适应学习何时信任SSM预测.
 \end{Cor}
 
 综合以上分析, MIMO-WM通过MIMO-SSM的并行结构实现高效序列建模, 通过门控机制增强表达能力, 同时保持了较低的计算复杂度. 其总参数量为
@@ -559,7 +557,6 @@ N_{\text{total}} = O\big(LD^2 + D(d_s+d_a)\big),
 默认配置$D=96$, $N=16$, $L=2$时约0.14M, 在所有对比方法中最为轻量.
 
 在模型架构确定后, MIMO-WM的训练采用单步预测损失与多步展开损失相结合的策略:
-\begin{equation}
 \begin{equation}
 \left\{\begin{aligned}
 \mathcal{L}_{\text{s}} &= \frac{1}{T}\sum_{t=0}^{T-1}\|{\bm s}_{t+1} - \hat{{\bm s}}_{t+1}\|^2, \\
