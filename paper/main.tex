@@ -35,11 +35,14 @@ Major Program of Xiangjiang Laboratory (24XJ01001; 25XJ01001).}}
 \begin{center}
 \parbox{\textwidth}{\setlength{\parindent}{1em}
 {\footnotesize {\CJKfamily{hei} 摘要:}
-针对人形机器人高维状态预测中精度与计算效率难以兼顾的问题, 本文提出一种基于多输入多输出状态空间模型的轻量级世界模型MIMO-WM.
-该模型对每个输入维度独立维护状态空间, 并通过sigmoid门控实现维度间的轻量级交互, 以增强对高维动力学系统的表达能力.
-在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明, MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比次优方法降低1.5\%; 参数量仅0.138M, 比次优方法减少38.4\%.
-理论分析证明了对角状态空间模型递推与卷积模式的等价性、计算复杂度优势以及交叉熵方法采样式模型预测控制的收敛性.
-实验结果验证了MIMO-WM在人形机器人状态预测任务中的有效性和轻量化优势.代码已开源在https://github.com/SEMHAQ/MIMO-WM.
+针对人形机器人高维状态预测中轻量化与精度的双重需求, 本文提出一种轻量级世界模型MIMO-WM.
+该模型对每个输入维度独立维护状态空间, 并通过sigmoid门控引入维度间的轻量级交互.
+参数量仅0.138M, 在各对比方法中最为轻量.
+在Humanoid数据集上, MIMO-WM的均方误差为0.199, 优于Mamba-WM的0.202和Transformer-WM的0.281; 在HumanoidStandup数据集上, 以0.138M参数达到与Transformer的0.302M参数相当的预测精度.
+消融实验表明门控机制可降低MSE约8.9\%, 序列长度分析表明输入序列长度$T{=}8$时预测精度最优.
+将MIMO-WM嵌入模型预测控制框架, 交叉熵方法采样式求解器相比梯度求解器可提升控制频率1到2个数量级; MIMO-WM在Humanoid上实现了7.99Hz的控制频率, 且其3步预测均方误差为0.216, 在对比方法中最低.
+复杂度分析表明, 设层数$L$、隐空间维度$D$时, MIMO-WM的复杂度为$O(LTD\log T)$, 当$T{=}32$时相比Transformer的$O(T^2D)$约可降低计算量6倍.
+代码已开源在https://github.com/SEMHAQ/MIMO-WM.
 
 {\CJKfamily{hei} 关键词:} 状态空间模型; 世界模型; 状态预测; 模型预测控制; 具身智能
 
@@ -65,7 +68,7 @@ ZHOU Xin-min$^{1,\,2}$,~~YU Huan-jie$^{3\dagger}$,~~ZHANG Hui-hui$^{4}$,~~WANG W
 \end{center}
 
 \vspace{-10pt}\footnotesize{\textbf{Abstract:}
-Humanoid robot state prediction faces the dual challenges of accuracy and computational efficiency. This paper proposes MIMO-WM, a lightweight world model based on multi-input multi-output state space model architecture, which maintains an independent state space for each input dimension and introduces lightweight cross-dimension interaction via a sigmoid gating mechanism for enhanced expressiveness on high-dimensional dynamics. Multi-seed experiments on Gymnasium MuJoCo Humanoid and HumanoidStandup benchmarks demonstrate that MIMO-WM achieves the best prediction accuracy on Humanoid with mean squared error of $19.87\times10^{-2}$, outperforming the second-best method by 1.5 percent, while requiring only 0.138 million parameters, 38.4\% fewer than the second-best method. Theoretical analysis proves the equivalence of recurrent and convolution computation modes, the computational complexity advantage, and the convergence guarantee of cross-entropy method based model predictive control. Experimental results validate the effectiveness and lightweight advantage of MIMO-WM for humanoid robot state prediction tasks.The code is open source at https://github.com/SEMHAQ/MIMO-WM. 
+Humanoid robot state prediction requires both lightweight design and prediction accuracy. This paper proposes MIMO-WM, a lightweight world model that maintains an independent state space for each input dimension and introduces cross-dimension interaction via a sigmoid gating mechanism. With only 0.138 million parameters, MIMO-WM is the most lightweight among all compared methods. Multi-seed experiments on Humanoid show that MIMO-WM achieves a mean squared error of 0.199, outperforming Mamba-WM at 0.202 and Transformer-WM at 0.281; on HumanoidStandup, it delivers accuracy comparable to Transformer while using only 45.7\% of its parameters. Ablation studies show that the gating mechanism reduces MSE by 8.9\%, and sequence length analysis shows that an input length of $T{=}8$ yields the best prediction accuracy. When integrated into a model predictive control framework, the cross-entropy method achieves 1 to 2 orders of magnitude higher control frequency than gradient-based solving; MIMO-WM achieves 7.99 Hz on Humanoid with the a 3-step prediction MSE of 0.216, lower than other compared methods. Complexity analysis with $L$ layers and hidden dimension $D$ shows that MIMO-WM achieves $O(LTD\log T)$ complexity, offering approximately 6$\times$ reduction compared to Transformer's $O(T^2D)$ when $T{=}32$. The code is open source at https://github.com/SEMHAQ/MIMO-WM.
 
 \textbf{Key words:} state space model; world model; state prediction; model predictive control; embodied intelligence
 
@@ -126,9 +129,9 @@ Mamba的选择性扫描机制虽然具有输入自适应能力, 但其参数量�
 
 1)~~提出多输入多输出世界模型（Multi-Input Multi-Output World Model, MIMO-WM）, 通过MIMO-SSM与sigmoid门控机制的结合, 在保持线性计算复杂度的同时实现更强的表达能力. 门控机制使模型能够根据输入内容动态调节信息流动, 参数量仅0.138M.
 
-2)~~在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上进行了多种子实验. 结果表明MIMO-WM在Humanoid上取得最优精度, 均方误差为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%, 同时参数量最少;
+2)~~在Gymnasium MuJoCo基准的Humanoid和HumanoidStandup两个人形机器人数据集上进行了多种子实验. 结果表明MIMO-WM在Humanoid上取得优于对比方法的精度, 均方误差为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%, 同时参数量最少;
 
-3)~~在机器人世界模型状态预测任务上系统比较了长短期记忆网络（long short-term memory, LSTM）、门控循环单元（gated recurrent unit, GRU）、Transformer、Mamba、时间卷积网络（temporal convolutional network, TCN）和MIMO-WM六种序列模型, 揭示了门控机制对SSM表达能力的显著提升;
+3)~~在机器人世界模型状态预测任务上系统比较了LSTM、GRU、Transformer、Mamba、TCN和MIMO-WM六种序列模型, 分析了门控机制对SSM表达能力的提升效果;
 
 4)~~理论分析证明了对角SSM递推与卷积模式的等价性、计算复杂度优势和交叉熵方法采样式MPC收敛性保证.
 
@@ -140,7 +143,7 @@ Mamba的选择性扫描机制虽然具有输入自适应能力, 但其参数量�
 
 世界模型的概念最早可追溯到Karl Friston的主动推理理论,
 其核心思想是智能体通过构建环境的内部模型来进行预测和规划.
-在深度学习时代, Ha和Schmidhuber\textsuperscript{\cite{2}}提出了基于变分自编码器VAE和循环神经网络的世界模型框架,
+在深度学习时代, Ha和Schmidhuber提出了基于变分自编码器VAE和循环神经网络的世界模型框架,
 通过学习压缩的环境表征来实现策略学习.
 Hafner等人\textsuperscript{\cite{13}}提出了Dreamer系列方法, 利用潜在动力学模型在想象中进行策略优化,
 在多个连续控制基准上取得了领先性能.
@@ -148,7 +151,7 @@ DreamerV3\textsuperscript{\cite{14}}进一步统一了离散和连续动作空�
 
 在人形机器人领域, 动力学模型与模型预测控制相结合的思路已被广泛探索\textsuperscript{\cite{15,16,17}}.
 然而, 人形机器人的高维状态空间和双足动态平衡特性对世界模型的预测精度和实时性提出了苛刻要求.
-近期, RT-2\textsuperscript{\cite{5}}将大规模视觉-语言模型与机器人动作空间对齐,
+近期, RT-2将大规模视觉-语言模型与机器人动作空间对齐,
 展示了基础模型在机器人控制中的潜力.
 然而, 这些方法普遍面临计算开销大、难以满足实时控制要求的问题.
 在高效计算方面, TinyML\textsuperscript{\cite{18}}和模型压缩技术为资源受限平台上的深度学习部署提供了解决方案.
@@ -163,7 +166,7 @@ SSM源于控制理论中的线性系统描述,
 近年来在深度学习领域引起了广泛关注.
 Gu等人\textsuperscript{\cite{20}}提出的HiPPO框架通过最优多项式投影解决了连续时间记忆问题,
 为SSM在序列建模中的应用奠定了理论基础.
-S4\textsuperscript{\cite{6}}通过结构化参数化
+S4通过结构化参数化
 解决了SSM在长程依赖建模中的数值稳定性问题,
 在Long Range Arena基准上取得了突破性结果.
 
@@ -177,7 +180,7 @@ Mamba是SSM发展的一个重要里程碑.
 它引入了选择性扫描机制, 使SSM的状态更新能够根据输入内容动态调整,
 从而在保持线性计算复杂度的同时实现了与Transformer相当的建模能力.
 Mamba的块结构已成为现代SSM架构的标准设计模式.
-Mamba-2\textsuperscript{\cite{9}}进一步揭示了SSM与注意力机制之间的结构化状态空间对偶性,
+Mamba-2进一步揭示了SSM与注意力机制之间的结构化状态空间对偶性,
 为统一理解不同序列建模方法提供了新的理论框架.
 
 现有SSM方法在应用于机器人状态预测时存在局限性.
@@ -220,9 +223,9 @@ MPC的核心在于动力学模型的准确性: 模型越精确, 控制性能越�
 传统的MPC使用解析模型, 但在复杂环境中获取精确的解析模型往往困难重重.
 
 将学习模型与MPC结合是一个活跃的研究方向.
-Nagabandi等人\textsuperscript{\cite{15,16,17}}展示了神经网络动力学模型在MPC中的有效性.
+Nagabandi等人展示了神经网络动力学模型在MPC中的有效性.
 Chua等人\textsuperscript{\cite{24}}提出了PETS方法, 通过概率集成模型处理模型不确定性.
-Hafner等人\textsuperscript{\cite{13}}的Dreamer方法则将潜在动力学模型与MPC相结合.
+Hafner等人的Dreamer方法则将潜在动力学模型与MPC相结合.
 本文将MIMO-WM嵌入MPC框架, 验证其在规划决策中的可行性\textsuperscript{\cite{25}}.
 
 \section{问题描述与预备知识}
@@ -443,7 +446,7 @@ MIMO-WM整体复杂度为
 O\big(LTD\log T + LTD^2 + TD(d_s+d_a)\big).
 \end{equation}
 作为对比, LSTM和Transformer的复杂度分别为$O(TLD^2)$和$O(T^2LD+TLD^2)$.
-当序列较长($T > D/\log D$)时, MIMO-WM的计算效率最优.
+当序列较长($T > D/\log D$)时, MIMO-WM在计算效率上更具优势.
 \end{Thm}
 
 {\CJKfamily{hei}证}~~
@@ -620,7 +623,7 @@ $\{{\bm a}^{(k)}\}_{k=1}^K \sim \mathcal{N}({\bm \mu}, \diag({\bm \sigma}^2))$, 
 
 本文采用MuJoCo\textsuperscript{\cite{28}}物理仿真器生成的medium数据集进行实验, 包含Humanoid(348维, 17维动作)和HumanoidStandup(376维, 17维动作)两个人形机器人数据集, 均通过Gymnasium\textsuperscript{\cite{29}}环境接口采集, 按8:2划分训练集和验证集, 输入数据经z-score归一化.
 
-对比方法包括LSTM-WM、GRU-WM、Transformer-WM、Mamba-WM和TCN-WM, 所有模型统一采用隐空间维度$D{=}96$, 层数$L{=}2$确保公平比较. MIMO-WM采用$D{=}96$, $N{=}16$, 层数$L{=}2$的配置. 所有实验使用5个随机种子42, 123, 456, 789, 1024运行并报告均值和标准差. 评价指标为MSE、$R^2$、推理时间和参数量. 训练采用100个epoch的AdamW优化器\textsuperscript{\cite{27}}, 学习率$5\times10^{-4}$, 余弦退火调度, 序列长度$T=32$, 批量大小1024, 梯度裁剪阈值1.0. 实验在NVIDIA RTX 3090 GPU上进行.
+对比方法包括LSTM-WM、GRU-WM、Transformer-WM、Mamba-WM和TCN-WM, 所有模型统一采用隐空间维度$D{=}96$, 层数$L{=}2$确保公平比较. MIMO-WM采用$D{=}96$, $N{=}16$, 层数$L{=}2$的配置. 所有实验使用5个随机种子42, 123, 456, 789, 1024运行并报告均值和标准差. 评价指标为MSE、$R^2$、推理时间和参数量. 训练采用100个epoch的AdamW优化器, 学习率$5\times10^{-4}$, 余弦退火调度, 序列长度$T=32$, 批量大小1024, 梯度裁剪阈值1.0. 实验在NVIDIA RTX 3090 GPU上进行.
 
 \subsection{基准实验与性能分析}
 
@@ -648,9 +651,9 @@ TCN & 20.68$\pm$0.32 & 0.741$\pm$0.004 & 0.84 & 0.189 \\
 \end{minipage}
 \par\endgroup
 
-表~1展示了各模型在Humanoid数据集上的性能对比. MIMO-WM取得了最优精度, MSE为$19.87\times10^{-2}$, 优于Mamba-WM的$20.18\times10^{-2}$, 相对降低1.5\%; 优于TCN-WM的$20.68\times10^{-2}$, 降低3.9\%; 优于Transformer-WM的$28.11\times10^{-2}$, 降低29.3\%; 同时大幅优于GRU-WM的$36.60\times10^{-2}$和LSTM-WM的$39.93\times10^{-2}$.
+表~1展示了各模型在Humanoid数据集上的性能对比. MIMO-WM的精度优于各对比方法, MSE为$19.87\times10^{-2}$, 低于Mamba-WM的$20.18\times10^{-2}$(相对降低1.5\%), 低于TCN-WM的$20.68\times10^{-2}$(降低3.9\%), 低于Transformer-WM的$28.11\times10^{-2}$(降低29.3\%), 低于GRU-WM的$36.60\times10^{-2}$和LSTM-WM的$39.93\times10^{-2}$.
 值得注意的是, MIMO-WM的参数量仅0.138M, 低于TCN-WM的0.189M和Mamba-WM的0.224M, 在所有方法中最为轻量.
-这表明MIMO-WM在保持轻量化的同时实现了最优预测精度.
+这表明MIMO-WM在保持轻量化的同时在预测精度上具有优势.
 
 为进一步验证MIMO-WM在不同人形机器人任务上的泛化能力, 在HumanoidStandup数据集上进行了实验, 结果如表~2所示. HumanoidStandup要求机器人从地面站起, 涉及更大幅度的姿态变化和更强的非线性动力学.
 
@@ -674,7 +677,7 @@ TCN & 55.10$\pm$0.08 & 0.424$\pm$0.001 & 0.76 & 0.189 \\
 \par\endgroup
 \end{minipage}
 
-综合两个数据集上的实验结果, MIMO-WM在Humanoid上取得最优精度, MSE为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%; 在HumanoidStandup上, MIMO-WM的MSE为$53.10\times10^{-2}$, $R^2$为0.444, 与Transformer并列最优, 但参数量仅0.138M, 为Transformer的45.7\%, 在所有方法中最为轻量.
+综合两个数据集上的实验结果, MIMO-WM在Humanoid上的精度优于各对比方法, MSE为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%; 在HumanoidStandup上, MIMO-WM的MSE为$53.10\times10^{-2}$, $R^2$为0.444, 与Transformer精度相当, 但参数量仅0.138M, 为Transformer的45.7\%, 在所有方法中最为轻量.
 各方法在精度、参数量和推理速度三个维度的综合对比如图~2所示.
 
 \begingroup\centering
@@ -792,7 +795,7 @@ LSTM和GRU虽然控制频率较高, 但其长期预测精度较差(见表~1), �
 
 \subsection{讨论}
 
-Humanoid数据集上的实验结果表~1表明MIMO-WM取得了最优精度, MSE为$19.87\times10^{-2}$, 优于Mamba-WM的$20.18\times10^{-2}$和Transformer-WM的$28.11\times10^{-2}$.
+Humanoid数据集上的实验结果表~1表明MIMO-WM的精度优于各对比方法, MSE为$19.87\times10^{-2}$, 低于Mamba-WM的$20.18\times10^{-2}$和Transformer-WM的$28.11\times10^{-2}$.
 MIMO-WM的参数量仅0.138M, 为所有方法中最轻量.
 消融实验表~3证实门控机制是性能提升的关键因素, 移除后MSE增加8.9\%.
 MPC实验表~5表明MIMO-WM的短期预测精度优于Mamba等SSM方法.
@@ -801,26 +804,21 @@ MPC实验表~5表明MIMO-WM的短期预测精度优于Mamba等SSM方法.
 与Dreamer系列等完整世界模型框架相比, MIMO-WM不涉及潜在空间建模和策略学习, 而是专注于状态-动作序列的高效预测, 以极低的参数开销实现高质量预测.
 
 本文存在以下局限性:
-1)~~仅在MuJoCo仿真数据上验证, 与真机部署存在差距;
-2)~~当前模型仅处理状态-动作序列, 未涉及视觉输入;
-3)~~推理时间在RTX 3090上测量, 未在嵌入式硬件上验证.
+1)~~模型仅支持单步状态预测, 在多步自回归展开中误差会累积, 限制了长期规划能力;
+2)~~当前仅处理状态-动作序列, 未涉及视觉输入, 难以应用于视觉-运动联合决策场景.
 
 \section{结论}
 
-本文提出了多输入多输出世界模型MIMO-WM, 通过MIMO-SSM与sigmoid门控机制的结合, 在保持线性计算复杂度的同时实现了更强的表达能力.
-在Humanoid和HumanoidStandup两个人形机器人数据集上的多种子实验表明, MIMO-WM取得最优精度(MSE=$19.87{\times}10^{-2}$), 比Mamba-WM降低1.5\%; 参数量仅0.138M, 为所有方法中最轻量.
-理论分析证明了对角SSM递推与卷积模式的等价性、计算复杂度优势以及CEM-MPC的收敛性.
+本文提出了基于维间独立状态空间的人形机器人轻量级世界模型MIMO-WM. 实验结果表明, 对于人形机器人这类高维物理动力学系统, 维度间独立SSM加轻量级门控交互的设计能够以极低的参数开销达到与全混合架构Transformer、Mamba相当甚至更优的预测精度. 这说明在物理动力学预测中, 全维度混合并非必要, 每个关节和自由度具有相对独立的动力学特性, 先独立建模再轻量交互的策略更符合问题的内在结构. 本工作为资源受限平台上的机器人状态预测提供了一种兼顾精度与轻量化的方案, 也为SSM在具身智能领域的应用提供了实验依据.
 
 未来工作将聚焦以下方向:
-1)~~优化推理速度, 探索递推模式下的低延迟部署;
-2)~~在嵌入式硬件上验证推理性能;
-3)~~扩展到视觉输入, 构建多模态世界模型;
-4)~~在真实人形机器人上验证状态预测和控制性能.
+1)~~探索多步预测中的误差校正机制, 提升长期规划可靠性;
+2)~~融合视觉编码器, 构建状态-视觉多模态世界模型.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  参考文献
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vskip 6pt
+\vskip 3pt
  {\fontsize{7.8pt}{9.4pt}\selectfont
 \begin{thebibliography}{99} \vskip 7pt
 \setlength{\parskip}{-2pt}
