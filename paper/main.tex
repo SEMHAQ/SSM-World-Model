@@ -651,7 +651,7 @@ TCN & 20.68$\pm$0.32 & 0.741$\pm$0.004 & 0.84 & 0.189 \\
 \end{minipage}
 \par\endgroup
 
-表~1展示了各模型在Humanoid数据集上的性能对比. MIMO-WM的精度优于各对比方法, MSE为$19.87\times10^{-2}$, 低于Mamba-WM的$20.18\times10^{-2}$(相对降低1.5\%), 低于TCN-WM的$20.68\times10^{-2}$(降低3.9\%), 低于Transformer-WM的$28.11\times10^{-2}$(降低29.3\%), 低于GRU-WM的$36.60\times10^{-2}$和LSTM-WM的$39.93\times10^{-2}$.
+表~1展示了各模型在Humanoid数据集上的性能对比. MIMO-WM的精度优于各对比方法, MSE为0.199, 低于Mamba-WM的0.202, 低于TCN-WM的0.207, 低于Transformer-WM的0.281, 低于GRU-WM的0.366和LSTM-WM的0.399.
 值得注意的是, MIMO-WM的参数量仅0.138M, 低于TCN-WM的0.189M和Mamba-WM的0.224M, 在所有方法中最为轻量.
 这表明MIMO-WM在保持轻量化的同时在预测精度上具有优势.
 
@@ -677,7 +677,7 @@ TCN & 55.10$\pm$0.08 & 0.424$\pm$0.001 & 0.76 & 0.189 \\
 \par\endgroup
 \end{minipage}
 
-综合两个数据集上的实验结果, MIMO-WM在Humanoid上的精度优于各对比方法, MSE为$19.87\times10^{-2}$, 比Mamba-WM降低1.5\%, 比Transformer-WM降低29.3\%; 在HumanoidStandup上, MIMO-WM的MSE为$53.10\times10^{-2}$, $R^2$为0.444, 与Transformer精度相当, 但参数量仅0.138M, 为Transformer的45.7\%, 在所有方法中最为轻量.
+综合两个数据集上的实验结果, MIMO-WM在Humanoid上的精度优于各对比方法, MSE为0.199, 比Mamba-WM的0.202低1.5\%, 比Transformer-WM的0.281低29.3\%; 在HumanoidStandup上, MIMO-WM的MSE为0.531, $R^2$为0.444, 与Transformer精度相当, 但参数量仅0.138M, 为Transformer的45.7\%, 在所有方法中最为轻量.
 各方法在精度、参数量和推理速度三个维度的综合对比如图~2所示.
 
 \begingroup\centering
